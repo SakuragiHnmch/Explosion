@@ -225,3 +225,12 @@ if (${BUILD_EDITOR})
     set(CMAKE_AUTORCC ON)
     set(CMAKE_AUTOUIC ON)
 endif ()
+
+# sse2neon
+Add3rdHeaderOnlyPackage(
+    NAME sse2neon
+    PLATFORM All
+    VERSION 1.6.0
+    HASH d50e8590a8be91f0c3f5da7986951d98a7542f13369fe83fffb894cec7ca429a
+    INCLUDE $<SOURCE_DIR>
+)

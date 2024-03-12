@@ -8,6 +8,7 @@
 #include <utility>
 
 #include <Common/Math/Half.h>
+#include <Common/Math/Simd.h>
 
 namespace Common::Internal {
     template <typename T, uint8_t L>
@@ -461,8 +462,13 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator+(T rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] + rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] + rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdAdd<T>(result.data, this->data, rhsArr);
         }
         return result;
     }
@@ -471,8 +477,13 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator-(T rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] - rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] - rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdSub<T>(result.data, this->data, rhsArr);
         }
         return result;
     }
@@ -481,8 +492,13 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator*(T rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] * rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] * rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdMul<T>(result.data, this->data, rhsArr);
         }
         return result;
     }
@@ -491,8 +507,13 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator/(T rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] / rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] / rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdDiv<T>(result.data, this->data, rhsArr);
         }
         return result;
     }
@@ -501,9 +522,14 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator+(const Vector& rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] + rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] + rhs.data[i];
+            }
+        } else {
+            SimdAdd<T>(result.data, this->data, rhs.data);
         }
+
         return result;
     }
 
@@ -511,8 +537,12 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator-(const Vector& rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] - rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] - rhs.data[i];
+            }
+        } else {
+            SimdSub<T>(result.data, this->data, rhs.data);
         }
         return result;
     }
@@ -521,8 +551,12 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator*(const Vector& rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] * rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] * rhs.data[i];
+            }
+        } else {
+            SimdMul<T>(result.data, this->data, rhs.data);
         }
         return result;
     }
@@ -531,8 +565,12 @@ namespace Common {
     Vector<T, L> Vector<T, L>::operator/(const Vector& rhs) const
     {
         Vector<T, L> result;
-        for (auto i = 0; i < L; i++) {
-            result.data[i] = this->data[i] / rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                result.data[i] = this->data[i] / rhs.data[i];
+            }
+        } else {
+            SimdDiv<T>(result.data, this->data, rhs.data);
         }
         return result;
     }
@@ -540,8 +578,13 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator+=(T rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] += rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] += rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdAdd<T>(this->data, this->data, rhsArr);
         }
         return *this;
     }
@@ -549,8 +592,13 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator-=(T rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] -= rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] -= rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdSub<T>(this->data, this->data, rhsArr);
         }
         return *this;
     }
@@ -558,8 +606,13 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator*=(T rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] *= rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] *= rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdMul<T>(this->data, this->data, rhsArr);
         }
         return *this;
     }
@@ -567,8 +620,13 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator/=(T rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] /= rhs;
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] /= rhs;
+            }
+        } else {
+            T rhsArr[4] = { rhs, rhs, rhs, rhs};
+            SimdDiv<T>(this->data, this->data, rhsArr);
         }
         return *this;
     }
@@ -576,8 +634,12 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator+=(const Vector& rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] += rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] += rhs.data[i];
+            }
+        } else {
+            SimdAdd<T>(this->data, this->data, rhs.data);
         }
         return *this;
     }
@@ -585,8 +647,12 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator-=(const Vector& rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] -= rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] -= rhs[i];
+            }
+        } else {
+            SimdSub<T>(this->data, this->data, rhs.data);
         }
         return *this;
     }
@@ -594,8 +660,12 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator*=(const Vector& rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] *= rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] *= rhs[i];
+            }
+        } else {
+            SimdMul<T>(this->data, this->data, rhs.data);
         }
         return *this;
     }
@@ -603,8 +673,12 @@ namespace Common {
     template <typename T, uint8_t L>
     Vector<T, L>& Vector<T, L>::operator/=(const Vector& rhs)
     {
-        for (auto i = 0; i < L; i++) {
-            this->data[i] /= rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                this->data[i] /= rhs[i];
+            }
+        } else {
+            SimdDiv<T>(this->data, this->data, rhs.data);
         }
         return *this;
     }
@@ -633,26 +707,24 @@ namespace Common {
     T Vector<T, L>::Model() const
     {
         static_assert(isFloatingPointV<T>);
-        T temp = 0;
-        for (auto i = 0; i < L; i++) {
-            temp += this->data[i] * this->data[i];
-        }
+        T temp = this->Dot(*this);
         return std::sqrt(temp);
     }
 
+    // Reture a new normalized vector
     template <typename T, uint8_t L>
     Vector<T, L> Vector<T, L>::Normalized() const
     {
-        return this->operator/(Model());
+        T oneOverModel = static_cast<T>(1.0) / Model();
+        return this->operator*(oneOverModel);
     }
 
+    // Normalize self
     template <typename T, uint8_t L>
     void Vector<T, L>::Normalize()
     {
         T oneOverModel = static_cast<T>(1.0) / Model();
-        for (auto i = 0; i < L; i++) {
-            this->data[i] *= oneOverModel;
-        }
+        this->operator*=(oneOverModel);
     }
 
     template <typename T, uint8_t L>
@@ -660,8 +732,14 @@ namespace Common {
     {
         static_assert(isFloatingPointV<T>);
         T temp = 0;
-        for (auto i = 0; i < L; i++) {
-            temp += this->data[i] * rhs.data[i];
+        if constexpr (L != 4) {
+            for (auto i = 0; i < L; i++) {
+                temp += this->data[i] * rhs.data[i];
+            }
+        }  else {
+            T temArr[4] = {0, 0, 0, 0};
+            SimdDot<T>(temArr, this->data, rhs.data);
+            temp = temArr[0];
         }
         return temp;
     }
@@ -674,9 +752,13 @@ namespace Common {
         if constexpr (L == 2) {
             result = this->x * rhs.y - this->y * rhs.x;
         } else {
-            result.x = this->y * rhs.z - this->z * rhs.y;
-            result.y = this->z * rhs.x - this->x * rhs.z;
-            result.z = this->x * rhs.y - this->y * rhs.x;
+            Vector<T, 4> dst = { 0, 0, 0, 0 };
+            Vector<T, 4> l = { this->x, this->y, this->z, 0 };
+            Vector<T, 4> r = { rhs.x, rhs.y, rhs.z, 0 };
+
+            SimdCross<T>(dst.data, l.data, r.data);
+
+            result = Vector<T, L> { dst.x, dst.y, dst.z };
         }
         return result;
     }

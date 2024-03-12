@@ -5,7 +5,6 @@
 #pragma once
 
 #include <cmath>
-
 #include <Common/Math/Half.h>
 
 namespace Common {

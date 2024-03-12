@@ -4,7 +4,7 @@ AddLibrary(
     TYPE STATIC
     SRC ${SOURCES}
     PUBLIC_INC Include
-    LIB debugbreak cityhash taskflow fmt-lib
+    LIB debugbreak cityhash taskflow fmt-lib sse2neon
 )
 
 file(GLOB TEST_SOURCES Test/*.cpp)
